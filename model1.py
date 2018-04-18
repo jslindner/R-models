@@ -7,19 +7,21 @@ class World:
         self.time = 0
     def step(self):
         self.time += 1
-        self.spp1.size = self.spp1.size * (1 + self.spp1.efficiency - self.spp1.mortality)
-        self.spp2.size = self.spp2.size * (1 + self.spp2.efficiency - self.spp2.mortality)
+        #self.spp1.size = self.spp1.size * (1 + self.spp1.efficiency - self.spp1.mortality)
+        #self.spp2.size = self.spp2.size * (1 + self.spp2.efficiency - self.spp2.mortality)
+        self.spp1.size = self.spp1.size * (1-self.spp1.size/self.spp1.carrying) #HOW TO ADD IN EFFICIENCY AND RESOURCE AVAILABILITY???
+
         #self.res1.abundance = self.res1.abundance * (1 - (self.spp1.efficiency + self.spp1.efficiency)) + self.res1.reup*(self.res1.maxab-self.res1.abundance)
         #self.res2.abundance = self.res2.abundance * (1 - (self.spp1.efficiency + self.spp1.efficiency)) + self.res2.reup*(self.res2.maxab-self.res2.abundance)
-
         self.res1.abundance = self.res1.abundance * self.res1.reup * ((self.res1.maxab-self.res1.abundance)/self.res1.maxab)
         self.res2.abundance = self.res2.abundance * self.res2.reup * ((self.res2.maxab-self.res2.abundance)/self.res2.maxab)
 
 class Species:
-    def __init__(self, startSize, mortality, efficiency):
+    def __init__(self, startSize, mortality, efficiency, carrying):
         self.mortality = mortality
         self.size = startSize
         self.efficiency = efficiency
+        self.carrying = carrying
 
 class Resource:
     def __init__(self, abundance, replenishRate, maxab):
