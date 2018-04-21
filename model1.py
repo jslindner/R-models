@@ -3,27 +3,25 @@ import tkinter
 random.seed()
 
 def plot(xvals, yvals):
-    print(xvals,yvals)
     root = tkinter.Tk()
-    c = tkinter.Canvas(root, width=700, height=400, bg='white')
+    c = tkinter.Canvas(root, width=700, height=600, bg='white')
     c.grid()
     # Create the x-axis.
-    c.create_line(50,350,650,350, width=3)
+    c.create_line(50,550,650,550, width=3)
     for i in range(11):
-        x = 50 + (i * 58)
-        c.create_text(x,355,anchor='n', text='%s'% (i*10) )
+        x = 50 + (i * 60)
+        c.create_text(x,555,anchor='n', text='%s'% i)
     # Create the y-axis.
-    c.create_line(50,350,50,50, width=3)
-    for i in range(6):
-        y = 350 - (i * 60)
-        c.create_text(45,y, anchor='e', text='%s'% (1000*i))
+    c.create_line(50,550,50,50, width=3)
+    for i in range(11):
+        y = 550 - (i * 50)
+        c.create_text(45,y, anchor='e', text='%s'% (200*i))
     # Plot the points.
     for i in range(len(xvals)):
         x, y = xvals[i], yvals[i]
-        xpixel = int(50 + 300*(x-1))
-        ypixel = int(350 - 300*y)
+        xpixel = int(50 + 60 * x)
+        ypixel = int(550 - y/4)
         c.create_oval(xpixel-3,ypixel-3,xpixel+3,ypixel+3, width=1, fill='red')
-        print('got here')
     root.mainloop()
 
 class World:
@@ -35,7 +33,7 @@ class World:
         self.res2 = res2
         self.time = 0
     def step(self):
-        self.spp1.grow(self.res1, self.res2) #population sizes grow
+        self.spp1.grow(self.res1, self.res2) #populations grow AND resources get consumed
         self.spp2.grow(self.res1, self.res2)
 
         if self.spp1.size < 1: #controlling for spp < 1, resource < 0, etc
@@ -51,7 +49,6 @@ class World:
 
 class Species:
     def __init__(self, startSize, lamb, mortality, carrying, res1lim, res2lim):
-        #self.world = 
         self.lamb = float(lamb) #intrinsic growth rate
         self.mortality = float(mortality) #proportion of individuals that will die in each timestep
         self.size = float(startSize) #population size
@@ -63,20 +60,19 @@ class Species:
             self.size = round(self.size * (1 + fi(self) * (self.carrying-self.size)/self.carrying))
             res1.abundance -= self.size
             res2.abundance -= self.size
+        res1.abundance = 1 + res1.reup * ((res1.maxab-res1.abundance)/res1.maxab)
+        res2.abundance = 1 + res2.reup * ((res2.maxab-res2.abundance)/res2.maxab)
 def fi(spp): #calculate lambda
     rate = spp.lamb - spp.mortality
     return rate
 
 class Resource:
     def __init__(self, abundance, replenishRate):
-        #self.world = world
-        self.maxab = 500 #max abundance
+        self.maxab = 1000 #max abundance
         self.abundance = abundance
         self.reup = replenishRate #rate at which more resource enters the system
-        self.conc = self.abundance/self.world.size
-    def getConsumed(self, spp1, spp2): #also logistic growth
-        self.abundance = round(self.abundance * (1 + consumption(self, spp1, spp2) * (1-self.abundance/self.maxab)))
-
+        self.conc = self.abundance/1000
+    
 def run(reps, spp1start, spp1lamb, spp1mort, spp1carrying, spp1res1lim, spp1res2lim, spp2start, spp2lamb, spp2mort, spp2carrying, spp2res1lim, spp2res2lim, res1ab, res1reup, res2ab, res2reup):
     spp1 = Species(spp1start, spp1lamb, spp1mort, spp1carrying, spp1res1lim, spp1res2lim)
     spp2 = Species(spp2start, spp2lamb, spp2mort, spp2carrying, spp2res1lim, spp2res2lim)
@@ -87,25 +83,29 @@ def run(reps, spp1start, spp1lamb, spp1mort, spp1carrying, spp1res1lim, spp1res2
     spp2.world = w
     res1.world = w
     res2.world = w
-    #print("Time 1")
-    #print("\tSpecies 1 abundance = " + str(w.spp1.size) + "\n\tSpecies 2 abundance = " + str(w.spp2.size) + "\n\tResource 1 abundance = " + str(w.res1.abundance) + "\n\tResource 2 abundance = " + str(w.res2.abundance))
     xvals = []
     yvals = []
+    res1x = []
+    res1y = []
     i = 1
     while i <= reps:
         w.step()
         xvals.append(i)
         yvals.append(w.spp1.size)
+        #res1x.append(i)
+        #res1y.append(w.res1.abundance)
         i += 1
-    return([xvals,yvals])
+    #print(xvals,yvals)
+    return [xvals, yvals]
 
-parameters = {'gens':11, 'spp1start':random.randint(0,1000), 'spp1lamb':random.randint(0,1), 'spp1mort':1, 'spp1carrying':random.randint(0,1000), 'spp1res1lim': 0.2, 'spp1res2lim': 0.3, 'spp2start':random.randint(0,1000), 'spp2lamb':0.7, 'spp2mort':1, 'spp2carrying':random.randint(0,1000), 'spp2res1lim': 0.2, 'spp2res2lim': 0.3, 'res1ab':random.randint(0,1000), 'res1reup':random.randint(0,100), 'res2ab':random.randint(0,1000), 'res2reup':random.randint(0,100)}
+parameters = {'gens':10, 'spp1start':random.randint(0,1000), 'spp1lamb':random.randint(0,1), 'spp1mort':1, 'spp1carrying':random.randint(0,1000), 'spp1res1lim': 0.2, 'spp1res2lim': 0.3, 'spp2start':random.randint(0,1000), 'spp2lamb':0.7, 'spp2mort':1, 'spp2carrying':random.randint(0,1000), 'spp2res1lim': 0.2, 'spp2res2lim': 0.3, 'res1ab':random.randint(0,1000), 'res1reup':random.randint(0,100), 'res2ab':random.randint(0,1000), 'res2reup':random.randint(0,100)}
 running = True
 while running == True:
     command = input("Change parameter? ").lower()
     commandwords = command.split()
     if commandwords[0] in parameters and len(commandwords) > 1:
         parameters[commandwords[0]] = int(commandwords[1])
-    plot(run(parameters['gens'], parameters['spp1start'], parameters['spp1lamb'], parameters['spp1mort'], parameters['spp1carrying'], parameters['spp1res1lim'], parameters['spp1res2lim'], parameters['spp2start'], parameters['spp2lamb'], parameters['spp2mort'], parameters['spp2carrying'], parameters['spp2res1lim'], parameters['spp2res1lim'], parameters['res1ab'], parameters['res1reup'], parameters['res2ab'], parameters['res2reup']))
+    vals = run(parameters['gens'], parameters['spp1start'], parameters['spp1lamb'], parameters['spp1mort'], parameters['spp1carrying'], parameters['spp1res1lim'], parameters['spp1res2lim'], parameters['spp2start'], parameters['spp2lamb'], parameters['spp2mort'], parameters['spp2carrying'], parameters['spp2res1lim'], parameters['spp2res1lim'], parameters['res1ab'], parameters['res1reup'], parameters['res2ab'], parameters['res2reup'])
+    plot(vals[0],vals[1])
 
 
