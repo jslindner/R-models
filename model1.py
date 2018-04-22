@@ -2,7 +2,7 @@ import random
 import tkinter
 random.seed()
 
-def plot(xvals, yvals):
+def plot(spp1xs, spp1ys, spp2ys, res1ys, res2ys):
     root = tkinter.Tk()
     c = tkinter.Canvas(root, width=700, height=600, bg='white')
     c.grid()
@@ -17,13 +17,18 @@ def plot(xvals, yvals):
         y = 550 - (i * 50)
         c.create_text(45,y, anchor='e', text='%s'% (200*i))
     # Plot the points.
-    for i in range(len(xvals)):
-        x, y = xvals[i], yvals[i]
-        xpixel = int(50 + 60 * x)
-        ypixel = int(550 - y/4)
-        c.create_oval(xpixel-3,ypixel-3,xpixel+3,ypixel+3, width=1, fill='red')
-    root.mainloop()
-
+    for i in range(len(spp1xs)):
+        spp1x, spp1y = spp1xs[i], spp1ys[i]
+        spp1xpixel = int(50 + 60 * spp1x)
+        spp1ypixel = int(550 - spp1y/4)
+        c.create_oval(spp1xpixel-3,spp1ypixel-3,spp1xpixel+3,spp1ypixel+3, width=1, fill='red')
+        spp2ypixel = int(550 - spp2ys[i]/4)
+        c.create_oval(spp1xpixel-3,spp2ypixel-3,spp1xpixel+3,spp2ypixel+3, width=1, fill='green')
+        res1ypixel = int(550 - res1ys[i]/4)
+        c.create_rectangle(spp1xpixel-3,res1ypixel-3,spp1xpixel+3,res1ypixel+3, width=1, fill='blue')
+        res2ypixel = int(550 - res2ys[i]/4)
+        c.create_rectangle(spp1xpixel-3,res2ypixel-3,spp1xpixel+3,res2ypixel+3, width=1, fill='yellow')
+    #root.mainloop()
 class World:
     def __init__(self, spp1, spp2, res1, res2):
         self.size = 1000
@@ -46,7 +51,6 @@ class World:
             self.res2.abundance = 0
 
         self.time += 1
-
 class Species:
     def __init__(self, startSize, lamb, mortality, carrying, res1lim, res2lim):
         self.lamb = float(lamb) #intrinsic growth rate
@@ -65,15 +69,14 @@ class Species:
 def fi(spp): #calculate lambda
     rate = spp.lamb - spp.mortality
     return rate
-
 class Resource:
     def __init__(self, abundance, replenishRate):
         self.maxab = 1000 #max abundance
         self.abundance = abundance
         self.reup = replenishRate #rate at which more resource enters the system
-        self.conc = self.abundance/1000
-    
+        self.conc = self.abundance/1000  
 def run(reps, spp1start, spp1lamb, spp1mort, spp1carrying, spp1res1lim, spp1res2lim, spp2start, spp2lamb, spp2mort, spp2carrying, spp2res1lim, spp2res2lim, res1ab, res1reup, res2ab, res2reup):
+    print('start' + str(spp1start))
     spp1 = Species(spp1start, spp1lamb, spp1mort, spp1carrying, spp1res1lim, spp1res2lim)
     spp2 = Species(spp2start, spp2lamb, spp2mort, spp2carrying, spp2res1lim, spp2res2lim)
     res1 = Resource(res1ab, res1reup)
@@ -83,20 +86,22 @@ def run(reps, spp1start, spp1lamb, spp1mort, spp1carrying, spp1res1lim, spp1res2
     spp2.world = w
     res1.world = w
     res2.world = w
-    xvals = []
-    yvals = []
-    res1x = []
+    spp1x = []
+    spp1y = []
+    spp2y = []
     res1y = []
+    res2y = []
     i = 1
     while i <= reps:
         w.step()
-        xvals.append(i)
-        yvals.append(w.spp1.size)
-        #res1x.append(i)
-        #res1y.append(w.res1.abundance)
+        print('size = ' + str(spp1.size))
+        spp1x.append(i)
+        spp1y.append(w.spp1.size)
+        spp2y.append(w.spp2.size)
+        res1y.append(w.res1.abundance)
+        res2y.append(w.res2.abundance)
         i += 1
-    #print(xvals,yvals)
-    return [xvals, yvals]
+    return [spp1x, spp1y, spp2y, res1y, res2y]
 
 parameters = {'gens':10, 'spp1start':random.randint(0,1000), 'spp1lamb':random.randint(0,1), 'spp1mort':1, 'spp1carrying':random.randint(0,1000), 'spp1res1lim': 0.2, 'spp1res2lim': 0.3, 'spp2start':random.randint(0,1000), 'spp2lamb':0.7, 'spp2mort':1, 'spp2carrying':random.randint(0,1000), 'spp2res1lim': 0.2, 'spp2res2lim': 0.3, 'res1ab':random.randint(0,1000), 'res1reup':random.randint(0,100), 'res2ab':random.randint(0,1000), 'res2reup':random.randint(0,100)}
 running = True
@@ -106,6 +111,6 @@ while running == True:
     if commandwords[0] in parameters and len(commandwords) > 1:
         parameters[commandwords[0]] = int(commandwords[1])
     vals = run(parameters['gens'], parameters['spp1start'], parameters['spp1lamb'], parameters['spp1mort'], parameters['spp1carrying'], parameters['spp1res1lim'], parameters['spp1res2lim'], parameters['spp2start'], parameters['spp2lamb'], parameters['spp2mort'], parameters['spp2carrying'], parameters['spp2res1lim'], parameters['spp2res1lim'], parameters['res1ab'], parameters['res1reup'], parameters['res2ab'], parameters['res2reup'])
-    plot(vals[0],vals[1])
+    plot(vals[0],vals[1],vals[2],vals[3],vals[4])
 
 
