@@ -2,31 +2,37 @@ import random
 import tkinter
 random.seed()
 
-def plot(spp1xs, spp1ys, spp2ys, res1ys, res2ys):
+def plot(spp1xs, spp1ys, spp2ys, res1ys, res2ys, gens):
     root = tkinter.Tk()
     c = tkinter.Canvas(root, width=700, height=600, bg='white')
     c.grid()
     # Create the x-axis.
     c.create_line(50,550,650,550, width=3)
-    for i in range(11):
+    for i in range(1,11):
         x = 50 + (i * 60)
-        c.create_text(x,555,anchor='n', text='%s'% i)
+        p = round(gens/i)
+        c.create_text(x,555,anchor='n', text='%s'% p)
     # Create the y-axis.
     c.create_line(50,550,50,50, width=3)
     for i in range(11):
         y = 550 - (i * 50)
         c.create_text(45,y, anchor='e', text='%s'% (200*i))
+    c.create_text(400,200,text='spp1 red\nspp2 green\nres1 blue\nres2 yellow')
     # Plot the points.
     for i in range(len(spp1xs)):
         spp1x, spp1y = spp1xs[i], spp1ys[i]
         spp1xpixel = int(50 + 60 * spp1x)
         spp1ypixel = int(550 - spp1y/4)
+        c.create_line(spp1xpixel, spp1ypixel, int(50 + 60 * spp1xs[i-1]), int(550 - spp1ys[i-1]/4), fill = 'red', width = 2)
         c.create_oval(spp1xpixel-3,spp1ypixel-3,spp1xpixel+3,spp1ypixel+3, width=1, fill='red')
         spp2ypixel = int(550 - spp2ys[i]/4)
+        c.create_line(spp1xpixel, spp2ypixel, int(50 + 60 * spp1xs[i-1]), int(550 - spp2ys[i-1]/4), fill = 'green', width = 2)
         c.create_oval(spp1xpixel-3,spp2ypixel-3,spp1xpixel+3,spp2ypixel+3, width=1, fill='green')
         res1ypixel = int(550 - res1ys[i]/4)
+        c.create_line(spp1xpixel, res1ypixel, int(50 + 60 * spp1xs[i-1]), int(550 - res1ys[i-1]/4), fill = 'blue', width = 2)
         c.create_rectangle(spp1xpixel-3,res1ypixel-3,spp1xpixel+3,res1ypixel+3, width=1, fill='blue')
         res2ypixel = int(550 - res2ys[i]/4)
+        c.create_line(spp1xpixel, res2ypixel, int(50 + 60 * spp1xs[i-1]), int(550 - res2ys[i-1]/4), fill = 'yellow', width = 2)
         c.create_rectangle(spp1xpixel-3,res2ypixel-3,spp1xpixel+3,res2ypixel+3, width=1, fill='yellow')
     #root.mainloop()
 class World:
@@ -38,8 +44,11 @@ class World:
         self.res2 = res2
         self.time = 0
     def step(self):
-        self.spp1.grow(self.res1, self.res2) #populations grow AND resources get consumed
-        self.spp2.grow(self.res1, self.res2)
+        delta1 = self.spp1.grow(self.res1, self.res2) #populations grow AND resources get consumed
+        delta2 = self.spp2.grow(self.res1, self.res2)
+        self.res1.grow(self.spp1, self.spp2, delta1, delta2)
+        self.res2.grow(self.spp1, self.spp2, delta1, delta2)
+        
 
         if self.spp1.size < 1: #controlling for spp < 1, resource < 0, etc
             self.spp1.size = 0
@@ -60,23 +69,22 @@ class Species:
         self.res1lim = res1lim
         self.res2lim = res2lim
     def grow(self, res1, res2): #logistic growth equation
-        if self.res1lim < res1.conc and self.res2lim < res2.conc:
-            self.size = round(self.size * (1 + fi(self) * (self.carrying-self.size)/self.carrying))
-            res1.abundance -= self.size
-            res2.abundance -= self.size
-        res1.abundance = 1 + res1.reup * ((res1.maxab-res1.abundance)/res1.maxab)
-        res2.abundance = 1 + res2.reup * ((res2.maxab-res2.abundance)/res2.maxab)
-def fi(spp): #calculate lambda
-    rate = spp.lamb - spp.mortality
-    return rate
+        old = self.size
+        self.size = self.size + self.size * (self.lamb - self.mortality) * ((self.carrying-self.size)/self.carrying)*(res1.conc - self.res1lim)*(res2.conc - self.res2lim)
+        delta = self.size - old
+        return delta
+
 class Resource:
     def __init__(self, abundance, replenishRate):
         self.maxab = 1000 #max abundance
         self.abundance = abundance
         self.reup = replenishRate #rate at which more resource enters the system
-        self.conc = self.abundance/1000  
+        self.conc = self.abundance/1000 
+    def grow(self, spp1, spp2, delta1, delta2):
+        self.abundance = self.abundance - spp1.size - spp2.size - 2*delta1 - 2*delta2
+        self.abundance = self.abundance + self.abundance * self.reup * ((self.maxab-self.abundance)/self.maxab)
+
 def run(reps, spp1start, spp1lamb, spp1mort, spp1carrying, spp1res1lim, spp1res2lim, spp2start, spp2lamb, spp2mort, spp2carrying, spp2res1lim, spp2res2lim, res1ab, res1reup, res2ab, res2reup):
-    print('start' + str(spp1start))
     spp1 = Species(spp1start, spp1lamb, spp1mort, spp1carrying, spp1res1lim, spp1res2lim)
     spp2 = Species(spp2start, spp2lamb, spp2mort, spp2carrying, spp2res1lim, spp2res2lim)
     res1 = Resource(res1ab, res1reup)
@@ -93,24 +101,30 @@ def run(reps, spp1start, spp1lamb, spp1mort, spp1carrying, spp1res1lim, spp1res2
     res2y = []
     i = 1
     while i <= reps:
-        w.step()
-        print('size = ' + str(spp1.size))
+        #print('size1 = ' + str(spp1.size))
+        #print('size2 = ' + str(spp2.size))
+        #print('res1conc = ' + str(res1.conc))
+        #print('res2conc = ' + str(res2.conc))
         spp1x.append(i)
         spp1y.append(w.spp1.size)
         spp2y.append(w.spp2.size)
         res1y.append(w.res1.abundance)
         res2y.append(w.res2.abundance)
+        w.step()
         i += 1
     return [spp1x, spp1y, spp2y, res1y, res2y]
 
-parameters = {'gens':10, 'spp1start':random.randint(0,1000), 'spp1lamb':random.randint(0,1), 'spp1mort':1, 'spp1carrying':random.randint(0,1000), 'spp1res1lim': 0.2, 'spp1res2lim': 0.3, 'spp2start':random.randint(0,1000), 'spp2lamb':0.7, 'spp2mort':1, 'spp2carrying':random.randint(0,1000), 'spp2res1lim': 0.2, 'spp2res2lim': 0.3, 'res1ab':random.randint(0,1000), 'res1reup':random.randint(0,100), 'res2ab':random.randint(0,1000), 'res2reup':random.randint(0,100)}
+parameters = {'gens':30, 'spp1start':20, 'spp1lamb':0.4, 'spp1mort':0.2, 'spp1carrying':500, 'spp1res1lim': 0.2, 'spp1res2lim': 0.3, 'spp2start':100, 'spp2lamb':0.3, 'spp2mort':0.2, 'spp2carrying':300, 'spp2res1lim': 0.2, 'spp2res2lim': 0.3, 'res1ab':400, 'res1reup':20, 'res2ab':900, 'res2reup':50}
 running = True
 while running == True:
+    vals = run(parameters['gens'], parameters['spp1start'], parameters['spp1lamb'], parameters['spp1mort'], parameters['spp1carrying'], parameters['spp1res1lim'], parameters['spp1res2lim'], parameters['spp2start'], parameters['spp2lamb'], parameters['spp2mort'], parameters['spp2carrying'], parameters['spp2res1lim'], parameters['spp2res1lim'], parameters['res1ab'], parameters['res1reup'], parameters['res2ab'], parameters['res2reup'])
+    plot(vals[0],vals[1],vals[2],vals[3],vals[4],parameters['gens'])
     command = input("Change parameter? ").lower()
     commandwords = command.split()
+    while commandwords[0] not in parameters:
+        command = input("Change parameter? ").lower()
+        commandwords = command.split()
     if commandwords[0] in parameters and len(commandwords) > 1:
-        parameters[commandwords[0]] = int(commandwords[1])
-    vals = run(parameters['gens'], parameters['spp1start'], parameters['spp1lamb'], parameters['spp1mort'], parameters['spp1carrying'], parameters['spp1res1lim'], parameters['spp1res2lim'], parameters['spp2start'], parameters['spp2lamb'], parameters['spp2mort'], parameters['spp2carrying'], parameters['spp2res1lim'], parameters['spp2res1lim'], parameters['res1ab'], parameters['res1reup'], parameters['res2ab'], parameters['res2reup'])
-    plot(vals[0],vals[1],vals[2],vals[3],vals[4])
+        parameters[commandwords[0]] = float(commandwords[1])
 
 
