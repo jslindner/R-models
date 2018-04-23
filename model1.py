@@ -84,7 +84,7 @@ class Resource():
         if self.ab > self.maxab:
             self.ab = self.maxab
 
-def test(spp1s, spp1r, spp1m, spp1k, spp1res1lim, spp1res2lim, spp2s, spp2r, spp2m, spp2k, spp2res1lim, spp2res2lim, res1ab, res1reup, res1max, res2ab, res2reup, res2max, reps):
+def test_nums(spp1s, spp1r, spp1m, spp1k, spp1res1lim, spp1res2lim, spp2s, spp2r, spp2m, spp2k, spp2res1lim, spp2res2lim, res1ab, res1reup, res1max, res2ab, res2reup, res2max, reps):
     spp1 = Species(spp1s, spp1r, spp1m, spp1k, spp1res1lim, spp1res2lim)
     spp2 = Species(spp2s, spp2r, spp2m, spp2k, spp2res1lim, spp2res2lim)
     res1 = Resource(res1ab, res1reup, res1max)
@@ -113,10 +113,18 @@ def test(spp1s, spp1r, spp1m, spp1k, spp1res1lim, spp1res2lim, spp2s, spp2r, spp
         res1ys.append(vals[2])
         res2ys.append(vals[3])
         i += 1
-    to_plot = [spp1xs,spp1ys,spp2ys,res1ys,res2ys]
-    plot_time(to_plot[0],to_plot[1],to_plot[2],to_plot[3],to_plot[4],reps)
+    to_plot = [spp1xs,spp1ys,spp2ys,res1ys,res2ys,reps]
+    return to_plot
+def plot_time(to_plot):
+    plot_time(to_plot[0],to_plot[1],to_plot[2],to_plot[3],to_plot[4],to_plot[5])
 
-def plot_rstar(gens):#spp1xs, spp1ys, spp2ys, res1ys, res2ys, gens):
+def plot_rstar(to_plot):#spp1xs, spp1ys, spp2ys, res1ys, res2ys, gens):
+    spp1xs = [to_plot[0]]
+    spp1ys = [to_plot[1]]
+    spp2ys = [to_plot[2]]
+    res1ys = [to_plot[3]]
+    res2ys = [to_plot[4]]
+    gens = to_plot[5]
     space = round(600/gens)
     root = tkinter.Tk()
     c = tkinter.Canvas(root, width=700, height=600, bg='white')
@@ -124,17 +132,25 @@ def plot_rstar(gens):#spp1xs, spp1ys, spp2ys, res1ys, res2ys, gens):
     # Create the x-axis.
     c.create_line(50,550,650,550, width=3)
     c.create_text(400,575,text = 'Resource 1 concentration')
+    c.create_text(50,560,text = '0')
+    c.create_text(650,560,text = '1')
     # Create the y-axis.
     c.create_line(50,550,50,50, width=3)
     c.create_text(10,100,text="\n".join("Resource 2 concentration"), anchor="nw")
     c.create_text(400,200,text='spp1 red\nspp2 green\nres1 blue\nres2 yellow')
+    c.create_text(40,550,text = '0')
+    c.create_text(40,50,text = '1')
     #Create ZGI 1
     c.create_line(100,50,100,400, width = 3)
     c.create_line(100,400,600,400, width = 3)
     #Create ZGI 1
     c.create_line(200,50,200,500, width = 3)
     c.create_line(200,500,600,500, width = 3)
-
+    spp1xstart,spp1ystart = spp1xs[0],spp1ys[0]
+    spp1xdone,spp1ydone = spp1xs[len(gens)-1],spp1ys[len(gens)-1]
+    spp2xstart,spp2ystart = spp2xs[0],spp2ys[0]
+    spp2xdone,spp2ydone = spp2xs[len(gens)-1],spp2ys[len(gens)-1]
+    c.create_line(spp1xstart,spp1ystart,spp1xdone,spp1ydone, width = 3, fill = 'red')
 
 
 
