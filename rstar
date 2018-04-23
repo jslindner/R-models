@@ -1,5 +1,6 @@
 import random
 import tkinter
+from tkinter import Tk, Canvas
 random.seed()
 
 def plot(gens):#spp1xs, spp1ys, spp2ys, res1ys, res2ys, gens):
@@ -9,14 +10,10 @@ def plot(gens):#spp1xs, spp1ys, spp2ys, res1ys, res2ys, gens):
     c.grid()
     # Create the x-axis.
     c.create_line(50,550,650,550, width=3)
-    for i in range(gens+1):
-        x = 50 + (i * space)
-        c.create_text(x,555,anchor='n', text='%s'% i)
+    c.create_text(400,575,text = 'Resource 1 concentration')
     # Create the y-axis.
     c.create_line(50,550,50,50, width=3)
-    for i in range(11):
-        y = 550 - (i * 50)
-        c.create_text(45,y, anchor='e', text='%s'% (200*i))
+    c.create_text(10,100,text="\n".join("Resource 2 concentration"), anchor="nw")
     c.create_text(400,200,text='spp1 red\nspp2 green\nres1 blue\nres2 yellow')
     #Create ZGI 1
     c.create_line(100,50,100,400, width = 3)
