@@ -20,7 +20,10 @@ def plot(gens):#spp1xs, spp1ys, spp2ys, res1ys, res2ys, gens):
     c.create_text(400,200,text='spp1 red\nspp2 green\nres1 blue\nres2 yellow')
     #Create ZGI 1
     c.create_line(100,50,100,400, width = 3)
-    c.create_line(100,400,550,400, width = 3)
+    c.create_line(100,400,600,400, width = 3)
+    #Create ZGI 1
+    c.create_line(200,50,200,500, width = 3)
+    c.create_line(200,500,600,500, width = 3)
     # # Plot the points.
     # #for i in range(gens):
     #  #   spp1x, spp1y = spp1xs[i], spp1ys[i]
