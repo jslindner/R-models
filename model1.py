@@ -99,7 +99,12 @@ def test(spp1s, spp1r, spp1m, spp1k, spp1res1lim, spp1res2lim, spp2s, spp2r, spp
     spp2ys = []
     res1ys = []
     res2ys = []
-    i = 1
+    spp1xs.append(1)
+    spp1ys.append(spp1s)
+    spp2ys.append(spp2s)
+    res1ys.append(res1ab)
+    res2ys.append(res2ab)
+    i = 2
     while i <= reps:
         vals = w.step()
         spp1xs.append(i)
