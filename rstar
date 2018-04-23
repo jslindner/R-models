@@ -22,15 +22,15 @@ def plot(gens):#spp1xs, spp1ys, spp2ys, res1ys, res2ys, gens):
     c.create_line(200,50,200,500, width = 3)
     c.create_line(200,500,600,500, width = 3)
     # # Plot the points.
-    # #for i in range(gens):
-    #  #   spp1x, spp1y = spp1xs[i], spp1ys[i]
-    #   #  spp1xpixel = int(50 + space * spp1x)
-    #    # spp1ypixel = int(550 - spp1y/4)
-    #     #c.create_line(spp1xpixel, spp1ypixel, int(50 + space * spp1xs[i-1]), int(550 - spp1ys[i-1]/4), fill = 'red', width = 2)
-    #     #c.create_oval(spp1xpixel-3,spp1ypixel-3,spp1xpixel+3,spp1ypixel+3, width=1, fill='red')
-    #     #spp2ypixel = int(550 - spp2ys[i]/4)
-    #     #c.create_line(spp1xpixel, spp2ypixel, int(50 + space * spp1xs[i-1]), int(550 - spp2ys[i-1]/4), fill = 'green', width = 2)
-    #     #c.create_oval(spp1xpixel-3,spp2ypixel-3,spp1xpixel+3,spp2ypixel+3, width=1, fill='green')
+    # for i in range(gens):
+    #     spp1x, spp1y = spp1xs[i], spp1ys[i]
+    #     spp1xpixel = int(50 + space * spp1x)
+    #     spp1ypixel = int(550 - spp1y/4)
+    #     c.create_line(spp1xpixel, spp1ypixel, int(50 + space * spp1xs[i-1]), int(550 - spp1ys[i-1]/4), fill = 'red', width = 2)
+    #     c.create_oval(spp1xpixel-3,spp1ypixel-3,spp1xpixel+3,spp1ypixel+3, width=1, fill='red')
+    #     spp2ypixel = int(550 - spp2ys[i]/4)
+    #     c.create_line(spp1xpixel, spp2ypixel, int(50 + space * spp1xs[i-1]), int(550 - spp2ys[i-1]/4), fill = 'green', width = 2)
+    #     c.create_oval(spp1xpixel-3,spp2ypixel-3,spp1xpixel+3,spp2ypixel+3, width=1, fill='green')
     #     res1ypixel = int(550 - res1ys[i]/4)
     #     c.create_line(spp1xpixel, res1ypixel, int(50 + space * spp1xs[i-1]), int(550 - res1ys[i-1]/4), fill = 'blue', width = 2)
     #     c.create_rectangle(spp1xpixel-3,res1ypixel-3,spp1xpixel+3,res1ypixel+3, width=1, fill='blue')
