@@ -45,6 +45,16 @@ class World:
     def step(self):
         self.spp1.grow()
         self.spp2.grow()
+        self.res1.ab = self.res1.ab - (self.spp1.size + self.spp2.size)
+        self.res2.ab = self.res2.ab - (self.spp1.size + self.spp2.size)
+        if self.spp1.size < 0:
+            self.spp1.size = 0
+        if self.spp2.size < 0:
+            self.spp2.size = 0
+        if self.res1.ab < 0:
+            self.res1.ab = 0
+        if self.res2.ab < 0:
+            self.res2.ab = 0
         self.res1.grow()
         self.res2.grow()
         return [self.spp1.size, self.spp2.size, self.res1.ab, self.res2.ab]
