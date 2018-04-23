@@ -2,7 +2,13 @@ import random
 import tkinter
 random.seed()
 
-def plot_time(spp1xs, spp1ys, spp2ys, res1ys, res2ys, gens):
+def plot_time(to_plot):
+    spp1xs = to_plot[0]
+    spp1ys = to_plot[1]
+    spp2ys = to_plot[2]
+    res1ys = to_plot[3]
+    res2ys = to_plot[4]
+    gens = to_plot[5]
     space = round(600/gens)
     root = tkinter.Tk()
     c = tkinter.Canvas(root, width=700, height=600, bg='white')
@@ -115,10 +121,12 @@ def test_nums(spp1s, spp1r, spp1m, spp1k, spp1res1lim, spp1res2lim, spp2s, spp2r
         i += 1
     to_plot = [spp1xs,spp1ys,spp2ys,res1ys,res2ys,reps]
     return to_plot
-def plot_time(to_plot):
-    plot_time(to_plot[0],to_plot[1],to_plot[2],to_plot[3],to_plot[4],to_plot[5])
+def test_time(to_plot):
+    plot_time(to_plot)
 
-def plot_rstar(to_plot):#spp1xs, spp1ys, spp2ys, res1ys, res2ys, gens):
+def test_rstar(to_plot):
+    plot_rstar(to_plot)
+def plot_rstar(to_plot):
     spp1xs = [to_plot[0]]
     spp1ys = [to_plot[1]]
     spp2ys = [to_plot[2]]
@@ -144,12 +152,12 @@ def plot_rstar(to_plot):#spp1xs, spp1ys, spp2ys, res1ys, res2ys, gens):
     c.create_line(100,50,100,400, width = 3)
     c.create_line(100,400,600,400, width = 3)
     #Create ZGI 1
-    c.create_line(200,50,200,500, width = 3)
-    c.create_line(200,500,600,500, width = 3)
+    # c.create_line(200,50,200,500, width = 3)
+    # c.create_line(200,500,600,500, width = 3)
     spp1xstart,spp1ystart = spp1xs[0],spp1ys[0]
-    spp1xdone,spp1ydone = spp1xs[len(gens)-1],spp1ys[len(gens)-1]
-    spp2xstart,spp2ystart = spp2xs[0],spp2ys[0]
-    spp2xdone,spp2ydone = spp2xs[len(gens)-1],spp2ys[len(gens)-1]
+    spp1xdone,spp1ydone = spp1xs[len(spp1xs)-1],spp1ys[len(spp1xs)-1]
+    # spp2xstart,spp2ystart = spp1xs[0],spp2ys[0]
+    # spp2xdone,spp2ydone = spp1xs[len(spp1xs)-1],spp2ys[len(spp1xs)-1]
     c.create_line(spp1xstart,spp1ystart,spp1xdone,spp1ydone, width = 3, fill = 'red')
 
 
