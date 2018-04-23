@@ -151,7 +151,7 @@ def plot_rstar(to_plot):
     #Create ZGI 1
     c.create_line(100,50,100,400, width = 3)
     c.create_line(100,400,600,400, width = 3)
-    #Create ZGI 1
+    #Create ZGI 2
     # c.create_line(200,50,200,500, width = 3)
     # c.create_line(200,500,600,500, width = 3)
     spp1xstart,spp1ystart = spp1xs[0],spp1ys[0]
@@ -160,8 +160,37 @@ def plot_rstar(to_plot):
     # spp2xdone,spp2ydone = spp1xs[len(spp1xs)-1],spp2ys[len(spp1xs)-1]
     c.create_line(spp1xstart,spp1ystart,spp1xdone,spp1ydone, width = 3, fill = 'red')
 
-
-
+def test_rstar1(to_plot):
+    plot_rstar1(to_plot[0],to_plot[1],to_plot[5])
+def plot_rstar1(spp1xs,spp1ys,gens):
+    space = round(600/gens)
+    root = tkinter.Tk()
+    c = tkinter.Canvas(root, width=700, height=600, bg='white')
+    c.grid()
+    # Create the x-axis.
+    c.create_line(50,550,650,550, width=3)
+    c.create_text(400,575,text = 'Resource 1 concentration')
+    c.create_text(50,560,text = '0')
+    c.create_text(650,560,text = '1')
+    # Create the y-axis.
+    c.create_line(50,550,50,50, width=3)
+    c.create_text(10,100,text="\n".join("Resource 2 concentration"), anchor="nw")
+    c.create_text(400,200,text='spp1 red\nspp2 green\nres1 blue\nres2 yellow')
+    c.create_text(40,550,text = '0')
+    c.create_text(40,50,text = '1')
+    #Create ZGI 1
+    c.create_line(100,50,100,400, width = 3)
+    c.create_line(100,400,600,400, width = 3)
+    #Create ZGI 2
+    # c.create_line(200,50,200,500, width = 3)
+    # c.create_line(200,500,600,500, width = 3)
+    spp1xstart,spp1ystart = spp1xs[0],spp1ys[0]
+    spp1xdone,spp1ydone = spp1xs[len(spp1xs)-1],spp1ys[len(spp1xs)-1]
+    spp1xstartpixel, spp1ystartpixel = int(50 + space * spp1xstart), int(550 - spp1ystart/4)
+    spp1xdonepixel, spp1ydonepixel = int(50 + space * spp1xdone), int(550 - spp1ydone/4)
+    # spp2xstart,spp2ystart = spp1xs[0],spp2ys[0]
+    # spp2xdone,spp2ydone = spp1xs[len(spp1xs)-1],spp2ys[len(spp1xs)-1]
+    c.create_line(spp1xstartpixel,spp1ystartpixel,spp1xdonepixel,spp1ydonepixel, width = 3, fill = 'red')
 
 
 
