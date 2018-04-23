@@ -2,7 +2,7 @@ import random
 import tkinter
 random.seed()
 
-def plot(spp1xs, spp1ys, spp2ys, res1ys, res2ys, gens):
+def plot_time(spp1xs, spp1ys, spp2ys, res1ys, res2ys, gens):
     space = round(600/gens)
     root = tkinter.Tk()
     c = tkinter.Canvas(root, width=700, height=600, bg='white')
@@ -23,16 +23,16 @@ def plot(spp1xs, spp1ys, spp2ys, res1ys, res2ys, gens):
         spp1x, spp1y = spp1xs[i], spp1ys[i]
         spp1xpixel = int(50 + space * spp1x)
         spp1ypixel = int(550 - spp1y/4)
-        #c.create_line(spp1xpixel, spp1ypixel, int(50 + space * spp1xs[i-1]), int(550 - spp1ys[i-1]/4), fill = 'red', width = 2)
+        c.create_line(spp1xpixel, spp1ypixel, int(50 + space * spp1xs[i-1]), int(550 - spp1ys[i-1]/4), fill = 'red', width = 2)
         c.create_oval(spp1xpixel-3,spp1ypixel-3,spp1xpixel+3,spp1ypixel+3, width=1, fill='red')
         spp2ypixel = int(550 - spp2ys[i]/4)
-        #c.create_line(spp1xpixel, spp2ypixel, int(50 + space * spp1xs[i-1]), int(550 - spp2ys[i-1]/4), fill = 'green', width = 2)
+        c.create_line(spp1xpixel, spp2ypixel, int(50 + space * spp1xs[i-1]), int(550 - spp2ys[i-1]/4), fill = 'green', width = 2)
         c.create_oval(spp1xpixel-3,spp2ypixel-3,spp1xpixel+3,spp2ypixel+3, width=1, fill='green')
         res1ypixel = int(550 - res1ys[i]/4)
-        #c.create_line(spp1xpixel, res1ypixel, int(50 + space * spp1xs[i-1]), int(550 - res1ys[i-1]/4), fill = 'blue', width = 2)
+        c.create_line(spp1xpixel, res1ypixel, int(50 + space * spp1xs[i-1]), int(550 - res1ys[i-1]/4), fill = 'blue', width = 2)
         c.create_rectangle(spp1xpixel-3,res1ypixel-3,spp1xpixel+3,res1ypixel+3, width=1, fill='blue')
         res2ypixel = int(550 - res2ys[i]/4)
-        #c.create_line(spp1xpixel, res2ypixel, int(50 + space * spp1xs[i-1]), int(550 - res2ys[i-1]/4), fill = 'yellow', width = 2)
+        c.create_line(spp1xpixel, res2ypixel, int(50 + space * spp1xs[i-1]), int(550 - res2ys[i-1]/4), fill = 'yellow', width = 2)
         c.create_rectangle(spp1xpixel-3,res2ypixel-3,spp1xpixel+3,res2ypixel+3, width=1, fill='yellow')
     #root.mainloop()
 
@@ -113,9 +113,27 @@ def test(spp1s, spp1r, spp1m, spp1k, spp1res1lim, spp1res2lim, spp2s, spp2r, spp
         res1ys.append(vals[2])
         res2ys.append(vals[3])
         i += 1
-    plot(spp1xs, spp1ys, spp2ys, res1ys, res2ys, reps)
+    to_plot = [spp1xs,spp1ys,spp2ys,res1ys,res2ys]
+    plot_time(to_plot[0],to_plot[1],to_plot[2],to_plot[3],to_plot[4],reps)
 
-
+def plot_rstar(gens):#spp1xs, spp1ys, spp2ys, res1ys, res2ys, gens):
+    space = round(600/gens)
+    root = tkinter.Tk()
+    c = tkinter.Canvas(root, width=700, height=600, bg='white')
+    c.grid()
+    # Create the x-axis.
+    c.create_line(50,550,650,550, width=3)
+    c.create_text(400,575,text = 'Resource 1 concentration')
+    # Create the y-axis.
+    c.create_line(50,550,50,50, width=3)
+    c.create_text(10,100,text="\n".join("Resource 2 concentration"), anchor="nw")
+    c.create_text(400,200,text='spp1 red\nspp2 green\nres1 blue\nres2 yellow')
+    #Create ZGI 1
+    c.create_line(100,50,100,400, width = 3)
+    c.create_line(100,400,600,400, width = 3)
+    #Create ZGI 1
+    c.create_line(200,50,200,500, width = 3)
+    c.create_line(200,500,600,500, width = 3)
 
 
 
