@@ -1,5 +1,7 @@
 import random
 import tkinter
+from tkinter import *
+
 random.seed()
 
 class World:
@@ -71,6 +73,8 @@ def test_nums(spp1s, spp1r, spp1m, spp1k, spp1res1lim, spp1res2lim, spp2s, spp2r
     res1ys.append(res1ab)
     res2ys.append(res2ab)
     i = 2
+
+
     while i <= reps:
         vals = w.step()
         spp1xs.append(i)
@@ -84,6 +88,7 @@ def test_nums(spp1s, spp1r, spp1m, spp1k, spp1res1lim, spp1res2lim, spp2s, spp2r
 
 def test_time(to_plot):
     plot_time(to_plot)
+
 def plot_time(to_plot):
     spp1xs = to_plot[0]
     spp1ys = to_plot[1]
@@ -105,24 +110,50 @@ def plot_time(to_plot):
     for i in range(11):
         y = 550 - (i * 50)
         c.create_text(45,y, anchor='e', text='%s'% (200*i))
-    c.create_text(400,200,text='spp1 red\nspp2 green\nres1 blue\nres2 yellow')
+    c.create_text(400,200,text='Species 1: red\nSpecies 2: green\nResource 1: blue\nResource 2: yellow')
+
+    # Create sliders
+
+    # def show_values():
+    #     print (w1.get(), w2.get())
+    
+    master = Tk()
+    w1 = Scale(master, from_=0, to=1500)
+    # w1.set(10)
+    w1.pack()
+    w2 = Scale(master, from_=0, to=200, orient=HORIZONTAL)
+    # w2.set(10)
+    w2.pack()
+    # Button(master, text='New Graph', command=show_values).pack()
+
     # Plot the points.
     for i in range(gens):
         spp1x, spp1y = spp1xs[i], spp1ys[i]
+        
         spp1xpixel = int(50 + space * spp1x)
         spp1ypixel = int(550 - spp1y/4)
-        c.create_line(spp1xpixel, spp1ypixel, int(50 + space * spp1xs[i-1]), int(550 - spp1ys[i-1]/4), fill = 'red', width = 2)
+
+        print(str(i)+","+str(gens))
+        if i != gens-1:
+            c.create_line(spp1xpixel, spp1ypixel, int(50 + space * spp1xs[i+1]), int(550 - spp1ys[i+1]/4), fill = 'red', width = 2)
+        
         c.create_oval(spp1xpixel-3,spp1ypixel-3,spp1xpixel+3,spp1ypixel+3, width=1, fill='red')
         spp2ypixel = int(550 - spp2ys[i]/4)
-        c.create_line(spp1xpixel, spp2ypixel, int(50 + space * spp1xs[i-1]), int(550 - spp2ys[i-1]/4), fill = 'green', width = 2)
+
+        if i != gens-1:
+            c.create_line(spp1xpixel, spp2ypixel, int(50 + space * spp1xs[i+1]), int(550 - spp2ys[i+1]/4), fill = 'green', width = 2)
         c.create_oval(spp1xpixel-3,spp2ypixel-3,spp1xpixel+3,spp2ypixel+3, width=1, fill='green')
         res1ypixel = int(550 - res1ys[i]/4)
-        c.create_line(spp1xpixel, res1ypixel, int(50 + space * spp1xs[i-1]), int(550 - res1ys[i-1]/4), fill = 'blue', width = 2)
+
+        if i != gens-1:  
+            c.create_line(spp1xpixel, res1ypixel, int(50 + space * spp1xs[i+1]), int(550 - res1ys[i+1]/4), fill = 'blue', width = 2)
         c.create_rectangle(spp1xpixel-3,res1ypixel-3,spp1xpixel+3,res1ypixel+3, width=1, fill='blue')
         res2ypixel = int(550 - res2ys[i]/4)
-        c.create_line(spp1xpixel, res2ypixel, int(50 + space * spp1xs[i-1]), int(550 - res2ys[i-1]/4), fill = 'yellow', width = 2)
+
+        if i != gens-1:
+            c.create_line(spp1xpixel, res2ypixel, int(50 + space * spp1xs[i+1]), int(550 - res2ys[i+1]/4), fill = 'yellow', width = 2)
         c.create_rectangle(spp1xpixel-3,res2ypixel-3,spp1xpixel+3,res2ypixel+3, width=1, fill='yellow')
-    #root.mainloop()
+    root.mainloop()
 
 def test_rstar(to_plot):
     plot_rstar(to_plot)
@@ -191,7 +222,4 @@ def plot_rstar1(spp1xs,spp1ys,gens):
     # spp2xstart,spp2ystart = spp1xs[0],spp2ys[0]
     # spp2xdone,spp2ydone = spp1xs[len(spp1xs)-1],spp2ys[len(spp1xs)-1]
     c.create_line(spp1xstartpixel,spp1ystartpixel,spp1xdonepixel,spp1ydonepixel, width = 3, fill = 'red')
-
-
-
 
